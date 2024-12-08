@@ -548,9 +548,14 @@ txsc_t :: #type proc "c" (name: cstring, script: rawptr, len: u32, output: ^tx_t
 /* interpret surface script */
 prsc_t :: #type proc "c" (name: cstring, script: rawptr, len: u32, model: ^m3d_t) -> i32
 
-when ODIN_OS == .Windows && ODIN_ARCH == .amd64
-{
-    foreign import m3d "m3d_windows_amd64.lib"
+when ODIN_OS == .Windows && ODIN_ARCH == .amd64 {
+    foreign import m3d "m3d_windows_amd64_release.lib"
+} else when ODIN_OS == .Darwin && ODIN_ARCH == .arm64 {
+    foreign import m3d "m3d_macos_arm64_release.a"
+} else when ODIN_OS == .Linux && ODIN_ARCH == .amd64 {
+    foreign import m3d "m3d_linux_x64_release.a"
+} else {
+    #panic("odin-m3d not supported for this platform")
 }
 
 @(default_calling_convention="c")
